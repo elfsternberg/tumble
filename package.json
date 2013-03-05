@@ -1,0 +1,26 @@
+{
+    "name": "Tumble",
+    "description": "An implementation of a parser for Tumbler."
+    "author": {
+        "name": "Elf M. Sternberg"
+    },
+    "version": "0.0.1",
+    "keywords": ["parser", "coffeescript"],
+    "licenses": [{
+        "type": "ARR",
+        "url": "http://elfsternberg.com/home/elfsternberg/repos/Tumble/LICENSE"
+    }],
+    "dependencies": {
+        "coffee-script": "1.x.x"
+    },
+    "devDependencies": {
+        "docco": "0.3.x"
+    },
+    "directories": {
+        "lib": "./lib"
+    },
+    "main": "./lib/tumble",
+    "engines": {
+        "node": ">= 0.6.0"
+    }
+}
