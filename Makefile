@@ -1,4 +1,4 @@
-.PHONY: app libs
+.PHONY: app libs test
 
 
 app_sources:= $(wildcard src/*/*.coffee)
@@ -29,6 +29,9 @@ bootstrap: app
 	cp bootstrap-extras/variables.less vendor/bootstrap/less
 	cd vendor/bootstrap && make build
 	cd vendor/bootstrap/bootstrap && tar cf - .| (cd ../../../app && tar xvf - )
+
+test: test/[0-9]*_mocha.coffee
+	./node_modules/.bin/mocha -C --compilers coffee:coffee-script -u tdd $<
 
 clean:
 	rm -fr app

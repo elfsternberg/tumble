@@ -1,6 +1,6 @@
 {
     "name": "Tumble",
-    "description": "An implementation of a parser for Tumbler."
+    "description": "An implementation of a parser for Tumbler.",
     "author": {
         "name": "Elf M. Sternberg"
     },
@@ -14,7 +14,9 @@
         "coffee-script": "1.x.x"
     },
     "devDependencies": {
-        "docco": "0.3.x"
+        "docco": "0.3.x",
+        "mocha": "1.8.x",
+        "chai":  "1.5.x"
     },
     "directories": {
         "lib": "./lib"
