@@ -11,7 +11,8 @@
         "url": "http://elfsternberg.com/home/elfsternberg/repos/Tumble/LICENSE"
     }],
     "dependencies": {
-        "coffee-script": "1.x.x"
+        "coffee-script": "1.x.x",
+        "reparse-coffeescript": "git://github.com/elfsternberg/reparse-coffeescript#master"
     },
     "devDependencies": {
         "docco": "0.3.x",

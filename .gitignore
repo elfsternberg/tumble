@@ -2,7 +2,5 @@
 .#*
 *~
 npm-debug.log
-.grunt.js
 node_modules/*
-build/
-public/
+lib/
