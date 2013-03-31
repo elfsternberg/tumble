@@ -84,6 +84,11 @@ AuthorsURL
 
 # > Handle these first
 
+{URL}
+{SeriesTitle}
+{AuthorName}
+{AuthorDescription}
+
 {block:IfSeries} 
     {Title}
     {Description}

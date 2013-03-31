@@ -3,7 +3,7 @@ assert = chai.assert
 expect = chai.expect
 should = chai.should()
 
-tumble = require('../lib/parser')
+tumble = require('../lib/tumble')
 
 test_data = [
     {
@@ -43,5 +43,4 @@ describe "Basic Functionality", ->
         do (data) ->
             it "should work with #{data.description}", ->
                 r = tumble(data.input)(data.data)
-                console.log("R:", r)
                 r.should.equal data.output

@@ -5,17 +5,17 @@ lib_objects:= $(subst src/, lib/, $(lib_sources:%.coffee=%.js))
 
 default: build
 
-build: $(lib_objects) lib/tumble.js
+build: $(lib_objects) lib/parser.js
 
-lib/tumble.js: src/tumble.peg
-	./node_modules/.bin/pegjs src/tumble.peg lib/tumble.js
+lib/parser.js: src/parser.peg
+	./node_modules/.bin/pegjs src/parser.peg lib/parser.js
 
 $(lib_objects): lib/%.js: src/%.coffee
 	@mkdir -p $(@D)
 	coffee -o $(@D) -c $<
 
 test: test/[0-9]*_mocha.coffee lib/tumble.js lib/parser.js
-	./node_modules/.bin/mocha -C --compilers coffee:coffee-script -u tdd $<
+	./node_modules/.bin/mocha -R tap -C --compilers coffee:coffee-script -u tdd $<
 
 
 clean:

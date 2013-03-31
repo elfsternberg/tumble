@@ -1,17 +1,16 @@
-tumble = require('./tumble')
+tumble = require('./parser')
 util = require('util')
 
 module.exports = (template) ->
 
     ast = tumble.parse(template)
-    console.log(util.inspect(ast, null, null))
+
     # Using the AST, return a function that will render each component
     # of the AST out, as long as the data provided to the AST makes
     # sens.
     #
 
     (content) ->
-        console.log(content)
         subtypes = (name) ->
             return 'cond'
 
