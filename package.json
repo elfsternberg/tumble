@@ -1,29 +1,37 @@
 {
     "name": "Tumble",
-    "description": "An implementation of a parser for Tumbler.",
-    "author": {
-        "name": "Elf M. Sternberg"
-    },
+    "description": "Trivial reimplementation of Tumbler template parser",
     "version": "0.0.1",
-    "keywords": ["parser", "coffeescript"],
-    "licenses": [{
-        "type": "ARR",
-        "url": "http://elfsternberg.com/home/elfsternberg/repos/Tumble/LICENSE"
-    }],
-    "dependencies": {
-        "coffee-script": "1.x.x",
-        "reparse-coffeescript": "git://github.com/elfsternberg/reparse-coffeescript#master"
+    "author": {
+        "name": "Kenneth \"Elf\" M. Sternberg",
+        "email": "elf.sternberg@gmail.com",
+        "url": "http://elfsternberg.com"
     },
-    "devDependencies": {
-        "docco": "0.3.x",
-        "mocha": "1.8.x",
-        "chai":  "1.5.x"
+    "repository": {
+        "type": "git",
+        "url": "ssh://elfstenberg@elfsternberg.com/home/elfsternberg/repos/tumble.git"
     },
-    "directories": {
-        "lib": "./lib"
-    },
-    "main": "./lib/tumble",
+    "licenses": [
+        {
+            "type": "PRIVATE"
+        }
+    ],
+    "main": "lib/tumble",
     "engines": {
         "node": ">= 0.6.0"
-    }
+    },
+    "scripts": {
+        "test": "make test"
+    },
+    "dependencies": {
+        "underscore": "1.4.x"
+    },
+    "devDependencies": {
+        "pegjs": "0.7.x",
+        "mocha": "1.8.x",
+        "chai": "1.5.x",
+        "coffee-script": "1.6.x",
+        "docco": "0.3.x"
+    },
+    "keywords": []
 }

@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="css/aimee.css" title="Style"></link>
+  <title>Elf Sternberg | Aimee' | {block:title}{title}{/block:title}</title>
+</head>
+
+<body>
+  <div id="container">
+    <div id="header">
+      <h1>Aimee</h1>
+    </div>
+
+    {block:index}
+    <div id="content">
+
+    <p>The Aimee' series grew out of a longstanding desire on my part to
+      write stories outside of the comforting future depicted in the
+      Journal Entries.  The fantasy setting allowed me to get away with
+      a number of tropes and scenes that I would otherwise never inflict
+      on my favorite characters.  It has, like the Journal Entries,
+      grown from one kind of fantasy into another, one where meaning
+      matters.</p>
+
+      <div id="toc">
+      {block:contents}
+        {block:series}
+          <h2>{title}</h2>
+        {/block:series}
+        {block:story}
+          <div class="title"><a href="{url}" class="tanch"> </a></div>
+        {/block:story}
+      {/block:contents}
+      </div>
+    </div>
+    {/block:index}
+
+    {block:story}
+    <h1>{title}</h1>
+    {body}
+
+    <div id="nextprevblock">
+    {block:next}<h4>Next: <a href="{url}">{title}</a></h4>{/block:next}
+    {block:prev}<h4>Previous: <a href="{url}">{title}</a></h4>{/block:prev}
+    </div>
+
+    <div id="copytitle">
+      <h5>{title}</h5>
+
+      <div id="canchor">
+        <a rel="license" href="http://creativecommons.org/licenses/by-nd-nc/1.0/"><img alt=
+        "Creative Commons License" src="images/somerights20.png"></a>
+      </div>is copyright &copy; {pubdate|"F j, Y"} Elf Mathieu Sternberg and is available
+            under a <a rel="license" href=
+                       "http://creativecommons.org/licenses/by-nd-nc/1.0/">Creative Commons License</a>.
+      </div>
+
+<!-- /Creative Commons License --><!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"> 
+    <Work rdf:about=""> 
+      <dc:type rdf:resource="http://purl.org/dc/dcmitype/Text" /> 
+      <license rdf:resource="http://creativecommons.org/licenses/by-nd-nc/1.0/" />
+    </Work>
+
+    <License rdf:about="http://creativecommons.org/licenses/by-nd-nc/1.0/">
+      <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+      <permits rdf:resource="http://web.resource.org/cc/Distribution" />
+      <requires rdf:resource="http://web.resource.org/cc/Notice" />
+      <requires rdf:resource="http://web.resource.org/cc/Attribution" />
+      <prohibits rdf:resource="http://web.resource.org/cc/CommercialUse" />
+   </License>
+</rdf:RDF>
+-->
+
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://elfsternberg.com/piwik/" : "http://elfsternberg.com/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 2);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://elfsternberg.com/piwik/piwik.php?idsite=2" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tag -->
+    </div>
+    {/block:story}
+</body>
+</html>
+

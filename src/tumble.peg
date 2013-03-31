@@ -1,0 +1,57 @@
+{
+    
+    
+
+}    
+
+document
+    = p:part* { return p }
+
+part
+    = text / variable / block
+
+text
+    = b:(!tag c:. {return c})+
+    { return { type: "text", content: b.join('') }; }
+
+variable "variable"
+    = t:tag_start rd         
+    { return { type: "variable", content: t }; }
+
+tag_start "tag_start"
+    =   ld n:tagname
+    { return n; }
+
+tagname "tagname"
+    = t:[a-zA-Z]+
+    { return t.join(''); }
+
+block "block"
+    = t:block_tag_start p:part* n:block_end_tag
+      &{ return t == n }
+      { return { type: "block", name: n, content: p }; }
+
+block_tag_start "tag_start"
+    =  ld "block:" n:tagname rd
+    { return n; }
+
+block_end_tag
+    =  ld "/block:" n:tagname rd
+    { return n; }
+
+tag
+    = ld (!rd !eol [a-zA-Z\:\/])+ rd
+
+ld
+    = "{"
+
+rd
+    = "}"
+
+eol
+    = "\n"
+    / "\r\n"
+    / "\r"
+    / "\u2028"
+    / "\u2029"
+  
