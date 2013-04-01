@@ -84,6 +84,9 @@ AuthorsURL
 
 # > Handle these first
 
+Minus the actual content of a template, the HTML that we use to build
+every page, a document tends to look like this:
+
 {URL}
 {SeriesTitle}
 {AuthorName}
@@ -99,6 +102,10 @@ AuthorsURL
 
 The important trick here is that the TableOfContents will be recursed
 wherever the {Contents} block is seen, up to a maximum depth of four.
+IfContents will be true if this is a subseries and there is content of
+a subseries; the reason for this is to prevent the rendering of an
+empty subseries.
+
 
 {block:IfStory}
     {Title}

@@ -14,21 +14,26 @@ module.exports = (template) ->
         subtypes = (name) ->
             return 'cond'
 
-        handler = (obj) ->
+        handler = (content, ast) ->
+
             isLegal = (name) -> true
+
             {
                 'text': () ->
-                    obj.content
+                    ast.text
+
                 'variable': () ->
-                    return '' if not (isLegal(obj.content) and content.hasOwnProperty(obj.content))
-                    content[obj.content]
+                    return '' if not (isLegal(ast.name) and content.hasOwnProperty(ast.name))
+                    content[ast.name]
 
                 'block': () ->
-                    return '' if not (isLegal(obj.content) and content.hasOwnProperty(obj.content))
-                    {
-                        'cond': () -> if obj.content then handler(obj.content) else ''
-                        'loop': () -> (handler(o) for o in obj.content)
-                    }[subtypes(obj.name)]()
+                    return '' if not (isLegal(ast.name) and content.hasOwnProperty(ast.name))
+                    f = {
+                        'cond': () -> handler(content[ast.name], ast.data)
+                        'loop': () -> (handler(c, ast.data) for c in content[ast.name])
+                    }[subtypes(ast.name)]
+                    console.log("F:", f)
+                    f()
             }[obj.type]()
 
         (handler(i) for i in ast).join("")

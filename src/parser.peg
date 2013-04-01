@@ -1,9 +1,3 @@
-{
-    
-    
-
-}    
-
 document
     = p:part* { return p }
 
@@ -12,11 +6,11 @@ part
 
 text
     = b:(!tag c:. {return c})+
-    { return { type: "text", content: b.join('') }; }
+    { return { type: "text", text: b.join('') }; }
 
 variable "variable"
     = t:tag_start rd         
-    { return { type: "variable", content: t }; }
+    { return { type: "variable", name: t }; }
 
 tag_start "tag_start"
     =   ld n:tagname
@@ -29,7 +23,7 @@ tagname "tagname"
 block "block"
     = t:block_tag_start p:part* n:block_end_tag
       &{ return t == n }
-      { return { type: "block", name: n, content: p }; }
+      { return { type: "block", name: n, data: p }; }
 
 block_tag_start "tag_start"
     =  ld "block:" n:tagname rd

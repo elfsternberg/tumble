@@ -31,7 +31,7 @@ test_data = [
     }
 
     {
-        'input': '<ul>{block:Stories}{Title}{/block:Stories}'
+        'input': '<ul>{block:Stories}{Title}{/block:Stories}</ul>'
         'output': '<ul>AAABBB</ul>'
         'data': {'stories': {'title': 'AAA'}},
         'description': "a conditional block"
