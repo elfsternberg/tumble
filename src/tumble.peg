@@ -1,6 +1,8 @@
 {
-    var _ = require('underscore');
-    var depth = 0;
+    var _ = require('underscore'),
+        depth = 0,
+        parts, variable, conditional, descendant, iterative, sections;
+
 
     var Contexter = function(c) {
         this.content = c
@@ -78,16 +80,60 @@
         }
     });
 
+    sections = function(ps, content) {
+        return _.map(ps, function(p) { return p(content); }).join("");
+    }
+    
+    parts = function(ps) {
+        return function(content) {
+            var context = new Contexter(content);
+            return sections(ps, context);
+        }
+    };
+    
+    text = function(ps) {
+        var t = ps.join("");
+        return function(content) {
+            return t;
+        };
+    };
+    
+    variable = function(t) {
+        return function(content) { 
+            return content.get(t, ""); 
+        };
+    };
+
+    // TODO: Yeah, there's a code smell below.  
+    
+    conditional = function(t, ps) {
+        return function(content) {
+            return content.if(t, function(c) {
+                return sections(ps, content);
+            });
+        }
+    };
+    
+    descendant = function(t, ps) {
+        return function(content) {
+            return content.descend(t, function(c) {
+                return sections(ps, content);
+            });
+        }
+    };
+    
+    iterative = function(t, ps) { 
+        return function(content) {
+            return content.many(t, function(c) {
+                return sections(ps, content);
+            });
+        }
+    }
 }
 
 document
     = ps:document_part* { 
-        return function(content) {
-            var context = new Contexter(content);
-            return _.map(ps, function(p) {
-                return p(context);
-            }).join("");
-        }
+        return parts(ps);
     }
 
 
@@ -96,19 +142,14 @@ document_part
 
 
 text
-    = b:(!tag c:. {return c})+ { 
-        return (function() {
-                var t = b.join("");
-                return function(content) { 
-                    return t;
-                }
-            }());
+    = bs:(!tag c:. {return c})+ { 
+        return text(bs);
     }
 
 
 variable "variable"
     = t:tag_start rd { 
-        return function(content) { return content.get(t, ""); };
+        return variable(t);
     }
 
 
@@ -118,16 +159,8 @@ simple_part
 
 conditional
     = t:ifblock_tag_start ps:simple_part* n:ifblock_tag_end
-      &{ return (t == n) }
-      { 
-          return function(content) {
-              return content.if(t, function(c) {
-                  return _.map(ps, function(p) {
-                      return p(c);
-                  }).join('');
-              });
-          }
-      }
+      &{ return (t == n) } 
+      { return conditional(t, ps); }
 
 
 ifblock_tag_start "tag_start"
@@ -141,17 +174,9 @@ ifblock_tag_end
 
 
 descendant
-    = n:blockblock_tag_start ps:simple_part* t:blockblock_tag_end
+    = t:blockblock_tag_start ps:simple_part* n:blockblock_tag_end
       &{ return (t == n) }
-      { 
-          return function(content) {
-              return content.descend(t, function(c) {
-                  return _.map(ps, function(p) {
-                      return p(c);
-                  }).join('');
-              });
-          }
-      }
+      { return descendant(t, ps); }
 
 
 blockblock_tag_start
@@ -166,15 +191,9 @@ blockblock_tag_end
 
 iterative
     = t:loopblock_tag_start ps:simple_part* n:loopblock_tag_end
-      &{ return t == n }
+      &{ return (t == n) }
       { 
-          return function(content) {
-              return content.many(t, function(c) {
-                  return _.map(ps, function(p) {
-                      return p(c);
-                  }).join(''); 
-              });
-          }
+          return iterative(t, ps);
       }
 
 loopblock_tag_start "tag_start"
