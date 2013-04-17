@@ -148,7 +148,7 @@ All of these are specified in the package.json file.
 
 ## LICENSE AND COPYRIGHT NOTICE: NO WARRANTY GRANTED OR IMPLIED
 
-Copyright (c) 2012 Elf M. Sternberg
+Copyright (c) 2013 Elf M. Sternberg
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
