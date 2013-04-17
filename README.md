@@ -43,11 +43,11 @@ field is populated, and show nothing if it isn't.
 
 If your datasource returns:
 
-obj = { "name": "Mr. Smith"}
+    obj = { "name": "Mr. Smith"}
 
 Then your template would use:
 
-{if:name}Hello {name}!{/if:name}
+    {if:name}Hello {name}!{/if:name}
 
 ### Block
 
@@ -60,13 +60,13 @@ render "next/prev" blocks in a webcomic.
 
 If your datasource returns:
 
-obj = { "next": {"title": "The Next Story"}, 
-        "prev": {"title": "The Previous Story"}}
+    obj = { "next": {"title": "The Next Story"}, 
+            "prev": {"title": "The Previous Story"}}
 
 Then your template would use:
 
-{block:next}The next story is entitled {title}{/block:next}
-{block:prev}The next story is entitled {title}{/block:prev}
+    {block:next}The next story is entitled {title}{/block:next}
+    {block:prev}The next story is entitled {title}{/block:prev}
 
 ### Many
 
@@ -81,13 +81,13 @@ series of titles in a series:
 
 If your datasource returns:
 
-obj = { 
-    "series": 
-        [ {"title": "A Story"}, 
-          {"title": "A Second Story"}, 
-          {"title": "A Third Story"}
-        ]
-    }
+    obj = { 
+        "series": 
+            [ {"title": "A Story"}, 
+              {"title": "A Second Story"}, 
+              {"title": "A Third Story"}
+            ]
+        }
 
 Then you could render a list of your stories this way:
 
@@ -105,12 +105,12 @@ The Tumble parser is intended to render a website for series and
 stories.  Both of which have titles, so you might have an object that
 says:
 
-obj = {
-    title: "An awesome series",
-    author: "Twilight Sparkle",
-    stories: [{title: "The first awesome story"},
-              {title: "The second awesome story"}]
-    }
+    obj = {
+        title: "An awesome series",
+        author: "Twilight Sparkle",
+        stories: [{title: "The first awesome story"},
+                  {title: "The second awesome story"}]
+        }
 
 In both "block" and "many", the current context descends into these
 objects in a deterministic way.  While inside a block or many, when
@@ -132,6 +132,9 @@ The first "title" will be the series title, but the titles in the
 "many" block will be story titles, in order.  Because each story does
 not have an "author" block, the context will scan up to the parent
 scope and find the author's name.
+
+See the unit tests for more examples.  Run them to see that this
+actually works as described.
 
 ## Requirements
 
