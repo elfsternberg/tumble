@@ -1,0 +1,220 @@
+{
+    var _ = require('underscore');
+    var depth = 0;
+
+    var Contexter = function(c) {
+        this.content = c
+        this.stack = [c];
+        this.templates = {};
+    }
+
+    _.extend(Contexter.prototype, {
+        has_any: function(name) {
+            return _.find(this.stack, function(o) { return _.has(o, name); });
+        },
+
+        has: function(name) {
+            if (typeof this.stack[0][name] != 'undefined') {
+                return this.stack[0][name];
+            }
+            return null;
+        },
+       
+        get: function(name) {
+            var p = this.has_any(name);
+            if (p && (_.isString(p[name]) || _.isNumber(p[name]))) {
+                return p[name];
+            }
+            if (arguments.length > 1) {
+                return arguments[1];
+            }
+            return '';
+        },
+
+        once: function(obj, cb) {
+            this.stack.unshift(obj);
+            var r = cb(this);
+            this.stack.shift();
+            return r;
+        },
+
+        if: function(name, cb) {
+            var p = this.has_any(name);
+            if (p && p[name]) {
+                return cb(this);
+            }
+            return "";
+        },
+        
+        descend: function(name, cb) {
+            var p = this.has(name);
+            if (p && _.isObject(p)) {
+                return this.once(p, cb);
+            }
+            return "";
+        },
+        
+        many: function(name, cb) {
+            var ps = this.has(name),
+            _this = this;
+            if (ps && _.isArray(ps)) {
+                return _.map(ps, function(p) {
+                    return _this.once(p, cb);
+                }).join("");
+            }
+            return "";
+        },
+
+        templatize: function(name, cb) {
+            this.templates[name] = cb;
+            return "";
+        },
+
+        template_render: function(name) {
+            if (this.templates[name] && _.isFunction(this.templates[name])) {
+                return this.templates[name](this);
+            }
+            return "";
+        }
+    });
+
+}
+
+document
+    = ps:document_part* { 
+        return function(content) {
+            var context = new Contexter(content);
+            return _.map(ps, function(p) {
+                return p(context);
+            }).join("");
+        }
+    }
+
+
+document_part
+    = iterative / descendant / conditional / variable / text
+
+
+text
+    = b:(!tag c:. {return c})+ { 
+        return (function() {
+                var t = b.join("");
+                return function(content) { 
+                    return t;
+                }
+            }());
+    }
+
+
+variable "variable"
+    = t:tag_start rd { 
+        return function(content) { return content.get(t, ""); };
+    }
+
+
+simple_part
+    = descendant / variable / conditional / text
+
+
+conditional
+    = t:ifblock_tag_start ps:simple_part* n:ifblock_tag_end
+      &{ return (t == n) }
+      { 
+          return function(content) {
+              return content.if(t, function(c) {
+                  return _.map(ps, function(p) {
+                      return p(c);
+                  }).join('');
+              });
+          }
+      }
+
+
+ifblock_tag_start "tag_start"
+    =  ld "if:" n:tagname rd
+    { return n; }
+
+
+ifblock_tag_end
+    =  ld "/if:" n:tagname rd
+    { return n; }
+
+
+descendant
+    = n:blockblock_tag_start ps:simple_part* t:blockblock_tag_end
+      &{ return (t == n) }
+      { 
+          return function(content) {
+              return content.descend(t, function(c) {
+                  return _.map(ps, function(p) {
+                      return p(c);
+                  }).join('');
+              });
+          }
+      }
+
+
+blockblock_tag_start
+    =  ld "block:" n:tagname rd
+    { return n; }
+
+
+blockblock_tag_end
+    =  ld "/block:" n:tagname rd
+    { return n; }
+
+
+iterative
+    = t:loopblock_tag_start ps:simple_part* n:loopblock_tag_end
+      &{ return t == n }
+      { 
+          return function(content) {
+              return content.many(t, function(c) {
+                  return _.map(ps, function(p) {
+                      return p(c);
+                  }).join(''); 
+              });
+          }
+      }
+
+loopblock_tag_start "tag_start"
+    =  ld "many:" n:tagname rd
+    { return n; }
+
+
+loopblock_tag_end
+    =  ld "/many:" n:tagname rd
+    { return n; }
+
+
+tag_start "tag_start"
+    =   ld n:tagname
+    { return n; }
+
+
+tagname "tagname"
+    = t:[a-zA-Z]+
+    { return t.join(''); }
+
+
+tag
+    = ld (!rd !eol [a-zA-Z\:\/])+ rd
+
+
+ld
+    = "{"
+
+
+rd
+    = "}"
+
+
+eol
+    = "\n"
+    / "\r\n"
+    / "\r"
+    / "\u2028"
+    / "\u2029"
+  
+
+

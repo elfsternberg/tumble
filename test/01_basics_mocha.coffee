@@ -3,7 +3,7 @@ assert = chai.assert
 expect = chai.expect
 should = chai.should()
 
-tumble = require('../lib/tumble')
+tumble = require('../lib/tumble').parse;
 
 test_data = [
     {
@@ -30,12 +30,60 @@ test_data = [
         'description': "two simple substitutions"
     }
 
+
     {
-        'input': '<ul>{block:Stories}{Title}{/block:Stories}</ul>'
+        'input': '<ul>{if:title}{title}BBB{/if:title}</ul>'
         'output': '<ul>AAABBB</ul>'
-        'data': {'stories': {'title': 'AAA'}},
+        'data': {'title': 'AAA'}
         'description': "a conditional block"
-    }]
+    }
+
+    {
+        'input': '<ul>{if:title}{title}BBB{/if:title}</ul>'
+        'output': '<ul></ul>'
+        'data': {'title': ''}
+        'description': "a conditional block with no input"
+    }
+
+
+    {
+        'input': '<ul>{block:stories}{title}{/block:stories}</ul>'
+        'output': '<ul></ul>'
+        'data': {'stories': {'title': ''}}
+        'description': "a descendent block"
+    }
+
+
+    {
+        'input': '<ul>{block:stories}{title}BBB{/block:stories}</ul>'
+        'output': '<ul>AAABBB</ul>'
+        'data': {'stories': {'title': 'AAA'}}
+        'description': "a descendent block 2"
+    }
+
+    {
+        'input': '<ul>{many:stories}{title}{/many:stories}</ul>'
+        'output': '<ul></ul>'
+        'data': {'stories': [{'title': ''}]}
+        'description': "an iterative block"
+    }
+
+
+    {
+        'input': '<ul>{many:stories}{title}BBB{/many:stories}</ul>'
+        'output': '<ul>AAABBBCCCBBB</ul>'
+        'data': {'stories': [{'title': 'AAA'}, {'title': 'CCC'}]},
+        'description': "an iterative block 2"
+    }
+
+    {
+        'input': '<ul>{author}{many:stories}{title}BBB{author}{/many:stories}</ul>'
+        'output': '<ul>DDDAAABBBDDDCCCBBBDDD</ul>'
+        'data': {'author': 'DDD', 'stories': [{'title': 'AAA'}, {'title': 'CCC'}]},
+        'description': "an iterative block with ascent"
+    }
+
+]
 
 
 describe "Basic Functionality", ->
