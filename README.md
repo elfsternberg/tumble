@@ -66,7 +66,7 @@ If your datasource returns:
 Then your template would use:
 
     {block:next}The next story is entitled {title}{/block:next}
-    {block:prev}The next story is entitled {title}{/block:prev}
+    {block:prev}The previous story is entitled {title}{/block:prev}
 
 ### Many
 
