@@ -8,6 +8,7 @@
         this.content = c
         this.stack = [c];
         this.templates = {};
+        this.depth = 0;
     }
 
     _.extend(Contexter.prototype, {
@@ -35,6 +36,9 @@
 
         once: function(obj, cb) {
             this.stack.unshift(obj);
+            if (this.stack.length > 10) {
+                throw new Error("Maxmimum nesting depth reached");
+            }
             var r = cb(this);
             this.stack.shift();
             return r;
@@ -137,32 +141,6 @@ document
     }
 
 
-document_part
-    = iterative / descendant / conditional / variable / text
-
-
-text
-    = bs:(!tag c:. {return c})+ { 
-        return text(bs);
-    }
-
-
-variable "variable"
-    = t:tag_start rd { 
-        return variable(t);
-    }
-
-
-simple_part
-    = descendant / variable / conditional / text
-
-
-conditional
-    = t:ifblock_tag_start ps:simple_part* n:ifblock_tag_end
-      &{ return (t == n) } 
-      { return conditional(t, ps); }
-
-
 ifblock_tag_start "tag_start"
     =  ld "if:" n:tagname rd
     { return n; }
@@ -171,12 +149,6 @@ ifblock_tag_start "tag_start"
 ifblock_tag_end
     =  ld "/if:" n:tagname rd
     { return n; }
-
-
-descendant
-    = t:blockblock_tag_start ps:simple_part* n:blockblock_tag_end
-      &{ return (t == n) }
-      { return descendant(t, ps); }
 
 
 blockblock_tag_start
@@ -188,13 +160,6 @@ blockblock_tag_end
     =  ld "/block:" n:tagname rd
     { return n; }
 
-
-iterative
-    = t:loopblock_tag_start ps:simple_part* n:loopblock_tag_end
-      &{ return (t == n) }
-      { 
-          return iterative(t, ps);
-      }
 
 loopblock_tag_start "tag_start"
     =  ld "many:" n:tagname rd
@@ -234,6 +199,43 @@ eol
     / "\r"
     / "\u2028"
     / "\u2029"
+
+
+text
+    = bs:(!tag c:. {return c})+ { 
+        return text(bs);
+    }
+
+
+variable "variable"
+    = t:tag_start rd { 
+        return variable(t);
+    }
   
+
+document_part
+    = iterative / descendant / conditional / variable / text
+
+
+simple_part
+    = descendant / variable / conditional / text
+
+
+conditional
+    = t:ifblock_tag_start ps:simple_part* n:ifblock_tag_end
+      &{ return (t == n) } 
+      { return conditional(t, ps); }
+
+
+descendant
+    = t:blockblock_tag_start ps:simple_part* n:blockblock_tag_end
+      &{ return (t == n) }
+      { return descendant(t, ps); }
+
+
+iterative
+    = t:loopblock_tag_start ps:simple_part* n:loopblock_tag_end
+      &{ return (t == n) }
+      { return iterative(t, ps); }
 
 

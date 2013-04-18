@@ -2,6 +2,7 @@ chai = require 'chai'
 assert = chai.assert
 expect = chai.expect
 should = chai.should()
+util   = require 'util'
 
 tumble = require('../lib/tumble').parse;
 
@@ -90,5 +91,21 @@ describe "Basic Functionality", ->
     for data in test_data
         do (data) ->
             it "should work with #{data.description}", ->
-                r = tumble(data.input)(data.data)
+                r = tumble(data.input)
+                r = r(data.data)
                 r.should.equal data.output
+
+describe "Check for recursion", ->
+    data = {
+            'input': '{block:a}{block:a}{block:a}{block:a}{block:a}{block:a}{block:a}{block:a}{block:a}{block:a}{block:a}{a}{/block:a}{/block:a}{/block:a}{/block:a}{/block:a}{/block:a}{/block:a}{/block:a}{/block:a}{/block:a}{/block:a}',
+            'output': '',
+            'data': {'a': {'a': {'a': {'a': {'a': {'a': {'a': {'a': {'a': {'a': {'a': {'a': 'b'}}}}}}}}}}}},
+            'description': "descent error"
+    }
+    do (data) ->
+        it "should catch an exception", ->
+            try
+                r = tumble(data.input)(data.data)
+                assert.ok false, "It did not throw the exception"
+            catch err
+                assert.ok true, "Recursion depth exeception thrown."
