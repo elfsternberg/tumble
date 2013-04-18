@@ -1,7 +1,8 @@
 {
     var _ = require('underscore'),
         depth = 0,
-        parts, variable, conditional, descendant, iterative, sections;
+        parts, variable, conditional, descendant, 
+        iterative, templatize, renderer, sections;
 
 
     var Contexter = function(c) {
@@ -132,7 +133,22 @@
                 return sections(ps, content);
             });
         }
-    }
+    };
+
+    templatize = function(t, ps) {
+        return function(content) {
+            content.templatize(t, function(content) {
+                return sections(ps, content);
+            });
+            return "";
+        }
+    };
+
+    renderer = function(t) {
+        return function(content) {
+            return content.template_render(t);
+        }
+    };
 }
 
 document
@@ -170,6 +186,15 @@ loopblock_tag_end
     =  ld "/many:" n:tagname rd
     { return n; }
 
+template_tag_start "tag_start"
+    =  ld "template:" n:tagname rd
+    { return n; }
+
+
+template_tag_end
+    =  ld "/template:" n:tagname rd
+    { return n; }
+
 
 tag_start "tag_start"
     =   ld n:tagname
@@ -202,19 +227,22 @@ eol
 
 
 text
-    = bs:(!tag c:. {return c})+ { 
-        return text(bs);
-    }
+    = bs:(!tag c:. {return c})+ 
+      { return text(bs); }
+
+
+renderer
+    = ld "render:" n:tagname rd  
+      { return renderer(n); }
 
 
 variable "variable"
-    = t:tag_start rd { 
-        return variable(t);
-    }
-  
+    = t:tag_start rd 
+      &{ return (t != "render") }
+      { return variable(t); }
 
 document_part
-    = iterative / descendant / conditional / variable / text
+    = renderer / template / iterative / descendant / conditional / variable / text
 
 
 simple_part
@@ -225,6 +253,12 @@ conditional
     = t:ifblock_tag_start ps:simple_part* n:ifblock_tag_end
       &{ return (t == n) } 
       { return conditional(t, ps); }
+
+
+template
+    = t:template_tag_start ps:simple_part* n:template_tag_end
+      &{ return (t == n) } 
+      { return templatize(t, ps); }
 
 
 descendant

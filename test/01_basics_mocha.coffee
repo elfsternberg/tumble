@@ -84,6 +84,12 @@ test_data = [
         'description': "an iterative block with ascent"
     }
 
+    {
+        'input': "{template:a}{name}{/template:a}F{render:a}"
+        'output': "FG"
+        'data': {'name': 'G'}
+        'description': "A templatized block"
+    }
 ]
 
 
