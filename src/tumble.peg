@@ -1,222 +1,32 @@
-{
-    var _ = require('underscore'),
-        depth = 0,
-        parts, variable, conditional, descendant, 
-        iterative, templatize, renderer, sections;
-
-
-    var Contexter = function(c) {
-        this.content = c
-        this.stack = [c];
-        this.templates = {};
-        this.depth = 0;
-    }
-
-    _.extend(Contexter.prototype, {
-        has_any: function(name) {
-            return _.find(this.stack, function(o) { return _.has(o, name); });
-        },
-
-        has: function(name) {
-            if (typeof this.stack[0][name] != 'undefined') {
-                return this.stack[0][name];
-            }
-            return null;
-        },
-       
-        get: function(name) {
-            var p = this.has_any(name);
-            if (p && (_.isString(p[name]) || _.isNumber(p[name]))) {
-                return p[name];
-            }
-            if (arguments.length > 1) {
-                return arguments[1];
-            }
-            return '';
-        },
-
-        once: function(obj, cb) {
-            this.stack.unshift(obj);
-            if (this.stack.length > 10) {
-                throw new Error("Maxmimum nesting depth reached");
-            }
-            var r = cb(this);
-            this.stack.shift();
-            return r;
-        },
-
-        if: function(name, cb) {
-            var p = this.has_any(name);
-            if (p && p[name]) {
-                return cb(this);
-            }
-            return "";
-        },
-        
-        descend: function(name, cb) {
-            var p = this.has(name);
-            if (p && _.isObject(p)) {
-                return this.once(p, cb);
-            }
-            return "";
-        },
-        
-        many: function(name, cb) {
-            var ps = this.has(name),
-            _this = this;
-            if (ps && _.isArray(ps)) {
-                return _.map(ps, function(p) {
-                    return _this.once(p, cb);
-                }).join("");
-            }
-            return "";
-        },
-
-        templatize: function(name, cb) {
-            this.templates[name] = cb;
-            return "";
-        },
-
-        template_render: function(name) {
-            if (this.templates[name] && _.isFunction(this.templates[name])) {
-                return this.templates[name](this);
-            }
-            return "";
-        }
-    });
-
-    sections = function(ps, content) {
-        return _.map(ps, function(p) { return p(content); }).join("");
-    }
-    
-    parts = function(ps) {
-        return function(content) {
-            var context = new Contexter(content);
-            return sections(ps, context);
-        }
-    };
-    
-    text = function(ps) {
-        var t = ps.join("");
-        return function(content) {
-            return t;
-        };
-    };
-    
-    variable = function(t) {
-        return function(content) { 
-            return content.get(t, ""); 
-        };
-    };
-
-    // TODO: Yeah, there's a code smell below.  
-    
-    conditional = function(t, ps) {
-        return function(content) {
-            return content.if(t, function(c) {
-                return sections(ps, content);
-            });
-        }
-    };
-    
-    descendant = function(t, ps) {
-        return function(content) {
-            return content.descend(t, function(c) {
-                return sections(ps, content);
-            });
-        }
-    };
-    
-    iterative = function(t, ps) { 
-        return function(content) {
-            return content.many(t, function(c) {
-                return sections(ps, content);
-            });
-        }
-    };
-
-    templatize = function(t, ps) {
-        return function(content) {
-            content.templatize(t, function(content) {
-                return sections(ps, content);
-            });
-            return "";
-        }
-    };
-
-    renderer = function(t) {
-        return function(content) {
-            return content.template_render(t);
-        }
-    };
-}
+// -*- mode: javascript -*-
 
 document
-    = ps:document_part* { 
-        return parts(ps);
-    }
+    = ps:part* 
+      { return ps; }
 
-
-ifblock_tag_start "tag_start"
-    =  ld "if:" n:tagname rd
-    { return n; }
-
-
-ifblock_tag_end
-    =  ld "/if:" n:tagname rd
-    { return n; }
-
-
-blockblock_tag_start
-    =  ld "block:" n:tagname rd
-    { return n; }
-
-
-blockblock_tag_end
-    =  ld "/block:" n:tagname rd
-    { return n; }
-
-
-loopblock_tag_start "tag_start"
-    =  ld "many:" n:tagname rd
-    { return n; }
-
-
-loopblock_tag_end
-    =  ld "/many:" n:tagname rd
-    { return n; }
-
-template_tag_start "tag_start"
-    =  ld "template:" n:tagname rd
-    { return n; }
-
-
-template_tag_end
-    =  ld "/template:" n:tagname rd
-    { return n; }
-
+part
+    = block / variable / text
 
 tag_start "tag_start"
-    =   ld n:tagname
-    { return n; }
+    =  ld b:tagname ":" n:tagname rd
+    { return {type: b, name: n }; }
 
+tag_end
+    =  ld '/' b:tagname ":" n:tagname rd 
+    { return {type: b, name: n }; }
 
 tagname "tagname"
     = t:[a-zA-Z]+
     { return t.join(''); }
 
-
 tag
     = ld (!rd !eol [a-zA-Z\:\/])+ rd
-
 
 ld
     = "{"
 
-
 rd
     = "}"
-
 
 eol
     = "\n"
@@ -225,51 +35,17 @@ eol
     / "\u2028"
     / "\u2029"
 
-
 text
     = bs:(!tag c:. {return c})+ 
-      { return text(bs); }
-
-
-renderer
-    = ld "render:" n:tagname rd  
-      { return renderer(n); }
-
+      { return { unit: 'text', content: bs.join('') } }
 
 variable "variable"
-    = t:tag_start rd 
-      &{ return (t != "render") }
-      { return variable(t); }
+    = ld t:tagname rd 
+      &{ return (t !== "render") }
+      { return { unit: 'variable', name: t }; }
 
-document_part
-    = renderer / template / iterative / descendant / conditional / variable / text
-
-
-simple_part
-    = descendant / variable / conditional / text
-
-
-conditional
-    = t:ifblock_tag_start ps:simple_part* n:ifblock_tag_end
-      &{ return (t == n) } 
-      { return conditional(t, ps); }
-
-
-template
-    = t:template_tag_start ps:simple_part* n:template_tag_end
-      &{ return (t == n) } 
-      { return templatize(t, ps); }
-
-
-descendant
-    = t:blockblock_tag_start ps:simple_part* n:blockblock_tag_end
-      &{ return (t == n) }
-      { return descendant(t, ps); }
-
-
-iterative
-    = t:loopblock_tag_start ps:simple_part* n:loopblock_tag_end
-      &{ return (t == n) }
-      { return iterative(t, ps); }
-
+block
+    = t:tag_start ps:part* n:tag_end
+      &{ return (t.type == n.type) && (t.name == n.name) } 
+      { return {unit: 'block', type:t.type, name:t.name, content: ps } }
 
