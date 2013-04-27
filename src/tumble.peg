@@ -2,7 +2,7 @@
 
 document
     = ps:part* 
-      { return ps; }
+      { return { unit: "block", name: "document", content: ps }; }
 
 part
     = block / variable / text

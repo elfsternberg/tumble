@@ -13,11 +13,11 @@ lib:
 lib/tumble.js: lib src/tumble.peg
 	./node_modules/.bin/pegjs src/tumble.peg lib/tumble.js
 
-$(lib_objects): lib lib/%.js: src/%.coffee
+$(lib_objects): $(lib_sources)
 	@mkdir -p $(@D)
 	coffee -o $(@D) -c $<
 
-test: test/[0-9]*_mocha.coffee lib/tumble.js
+test: test/[0-9]*_mocha.coffee lib/tumble.js lib/parser.js
 	./node_modules/.bin/mocha -R tap -C --compilers coffee:coffee-script -u tdd $<
 
 

@@ -5,6 +5,7 @@ should = chai.should()
 util   = require 'util'
 
 tumble = require('../lib/tumble').parse;
+parse = require('../lib/parser');
 
 test_data = [
     {
@@ -98,7 +99,7 @@ describe "Basic Functionality", ->
         do (data) ->
             it "should work with #{data.description}", ->
                 r = tumble(data.input)
-                r = r(data.data)
+                r = parse(r, data.data)
                 r.should.equal data.output
 
 describe "Check for recursion", ->
@@ -111,7 +112,8 @@ describe "Check for recursion", ->
     do (data) ->
         it "should catch an exception", ->
             try
-                r = tumble(data.input)(data.data)
+                r = tumble(data.input)
+                r = parse(r, data.data)
                 assert.ok false, "It did not throw the exception"
             catch err
-                assert.ok true, "Recursion depth exeception thrown."
+                assert.ok err.id == 'recursion-error', "Recursion depth exeception thrown."
