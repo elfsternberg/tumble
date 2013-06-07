@@ -1,0 +1,16 @@
+#!/usr/bin/env coffee
+
+staticserver = require('node-static')
+files = new(staticserver.Server)('./dist')
+
+require('http').createServer((request, response) ->
+    request.addListener 'end', ->
+        files.serve request, response, (err, res) ->
+            if (err)
+                console.error("> Error serving " + request.url + " - " + err.message)
+                response.writeHead(err.status, err.headers)
+                response.end()
+            else
+                console.log("> " + request.url + " - " + res.message)
+).listen(8081)
+console.log("> node-static is listening on http://127.0.0.1:8081")

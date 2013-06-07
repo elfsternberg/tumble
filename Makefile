@@ -1,21 +1,39 @@
-.PHONY: lib test
+.PHONY: lib test library docs
 
-lib_sources:= $(wildcard src/*.coffee)
-lib_objects:= $(subst src/, lib/, $(lib_sources:%.coffee=%.js))
+COFFEE= ./node_modules/.bin/coffee
+PEGJS= ./node_modules/.bin/pegjs
+DOCCO= ./node_modules/.bin/docco
+MOCHA= ./node_modules/.bin/mocha
+
+cof_sources:= $(wildcard src/*.coffee)
+cof_objects:= $(subst src/, lib/, $(cof_sources:%.coffee=%.js)) 
+
+peg_sources:= $(wildcard src/*.peg)
+peg_objects:= $(subst src/, lib/, $(peg_sources:%.peg=%.js)) 
+
+library: $(cof_objects) $(peg_objects)
 
 default: build
 
-build: $(lib_objects) lib/tokenizer.js
+build: $(lib_objects) 
 
 lib:
 	mkdir -p lib
 
-lib/tumble.js: lib src/tumble.peg
-	./node_modules/.bin/pegjs src/tumble.peg lib/tumble.js
-
-$(lib_objects): $(lib_sources)
+$(cof_objects): $(cof_sources)
 	@mkdir -p $(@D)
-	coffee -o $(@D) -c $<
+	$(COFFEE) -o $(@D) -c $<
+
+$(peg_objects): $(peg_sources)
+	@mkdir -p $(@D)
+	$(PEGJS) $< $@
+
+docs:
+	$(DOCCO) $(cof_sources)
+
+echo:
+	echo $(cof_sources)
+	echo $(cof_objects)
 
 test: test/[0-9]*_mocha.coffee lib/tumble.js lib/parser.js
 	./node_modules/.bin/mocha -R tap -C --compilers coffee:coffee-script -u tdd $<
