@@ -41,7 +41,6 @@ text
 
 variable "variable"
     = ld t:tagname rd 
-      &{ return (t !== "render") }
       { return { unit: 'variable', name: t }; }
 
 block

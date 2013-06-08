@@ -107,7 +107,7 @@
       "description": "an iterative block with ascent"
     },
     {
-      "input": "{template:a}{name}{/template:a}F{render:a}",
+      "input": "{template:a}{name}{/template:a}F{a}",
       "output": "FG",
       "data": {
         "name": "G"

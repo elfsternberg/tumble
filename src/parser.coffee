@@ -26,14 +26,17 @@ class Contexter
         # Scalars only
         p = @has_any_one(name)
         return p if p and (_.isString(p) or _.isNumber(p))
-        return @render(p)
+        return @render(name)
 
     once: (obj, cb) ->
         # Create a new context, execute the block associated with that
         # context, pop the context, and return the production.
         @stack.unshift obj
+        @depth++
+        throw new Error('recursion-error') if @depth > 10
         r = cb @
         @stack.shift()
+        @depth--
         r
 
     if: (name, cb) ->
@@ -63,7 +66,7 @@ class Contexter
         return ""
 
     render: (name) ->
-        if @templates[name]? and _.isfunction(@templates[name]) then @templates[name](@) else ""
+        if @templates[name]? and _.isFunction(@templates[name]) then @templates[name](@) else ""
 
 
 module.exports = (ast, data) ->
