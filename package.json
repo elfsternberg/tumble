@@ -1,7 +1,7 @@
 {
     "name": "Tumble",
     "description": "Trivial reimplementation of Tumbler template parser",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "author": {
         "name": "Kenneth \"Elf\" M. Sternberg",
         "email": "elf.sternberg@gmail.com",
