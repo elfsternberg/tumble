@@ -22,7 +22,7 @@ lib:
 
 $(cof_objects): $(cof_sources)
 	@mkdir -p $(@D)
-	$(COFFEE) -o $(@D) -c $<
+	$(foreach source, $(cof_sources), $(COFFEE) -o $(@D) -c $(source); )
 
 $(peg_objects): $(peg_sources)
 	@mkdir -p $(@D)

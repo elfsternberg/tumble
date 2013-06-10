@@ -6,7 +6,7 @@ util   = require 'util'
 fs     = require 'fs'
 path   = require 'path'
 
-tumble = require('../lib/tumble').parse;
+tumble = require('../lib/lexer').parse;
 parse = require('../lib/parser');
 
 test_data = JSON.parse(fs.readFileSync(path.join(__dirname, 'data.json'), 'utf-8'))
