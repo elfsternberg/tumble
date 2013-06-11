@@ -1,6 +1,6 @@
 // -*- mode: javascript -*-
 {
-    var _VALID_BLOCK_TYPES = ['if', 'when', 'template', 'many', 'each', 'block'];
+    var _VALID_BLOCK_TYPES = ['if', 'when', 'template', 'many', 'block'];
     var _VBT_LENGTH = _VALID_BLOCK_TYPES.length;
 
     function is_valid_block_type(b) {
