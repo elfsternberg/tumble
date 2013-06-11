@@ -12,7 +12,6 @@ fromFile = (path, options, callback) ->
     fs.readFile path, 'utf8', (err, str) ->
         if callback
             return callback(err) if err
-            console.log(str, options);
             return callback(null, render(str, options, callback))
         throw err if err
 
