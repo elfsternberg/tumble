@@ -10,9 +10,12 @@ render = (str, options, callback) ->
 
 fromFile = (path, options, callback) ->
     fs.readFile path, 'utf8', (err, str) ->
-        return callback(err) if err
-        render(str, options, callback)
+        if callback
+            return callback(err) if err
+            console.log(str, options);
+            return callback(null, render(str, options, callback))
+        throw err if err
 
 fromFile.render = render
 
-exports = fromFile
+module.exports = fromFile

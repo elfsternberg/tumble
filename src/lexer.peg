@@ -1,4 +1,18 @@
 // -*- mode: javascript -*-
+{
+    var _VALID_BLOCK_TYPES = ['if', 'when', 'template', 'many', 'each', 'block'];
+    var _VBT_LENGTH = _VALID_BLOCK_TYPES.length;
+
+    function is_valid_block_type(b) {
+        for(i = 0; i < _VBT_LENGTH; i++) {
+            if (_VALID_BLOCK_TYPES[i] == b) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
 
 document
     = ps:part* 
@@ -9,6 +23,7 @@ part
 
 tag_start "tag_start"
     =  ld b:tagname ":" n:tagname rd
+    &{ return is_valid_block_type(b); }
     { return {type: b, name: n }; }
 
 tag_end

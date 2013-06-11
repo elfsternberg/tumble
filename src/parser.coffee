@@ -39,10 +39,16 @@ class Contexter
         @depth--
         r
 
-    if: (name, cb) ->
-        # Execute and return this specifiecd block if and only if the
+    when: (name, cb) ->
+        # Execute and return this specified block if and only if the
         # requested context is valid.
         p = @has_any_one(name)
+        if p then cb(@) else ''
+
+    if: (name, cb) ->
+        # Execute and return this specifiecd block if and only if the
+        # requested context is valid AND current
+        p = @has(name)
         if p then cb(@) else ''
 
     block: (name, cb) ->
