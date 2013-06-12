@@ -1,5 +1,4 @@
 _ = require 'underscore'
-util = require 'util'
 
 class Contexter
 
