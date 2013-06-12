@@ -4,7 +4,7 @@
     var _VBT_LENGTH = _VALID_BLOCK_TYPES.length;
 
     function is_valid_block_type(b) {
-        for(i = 0; i < _VBT_LENGTH; i++) {
+        for(var i = 0; i < _VBT_LENGTH; i++) {
             if (_VALID_BLOCK_TYPES[i] == b) {
                 return true;
             }

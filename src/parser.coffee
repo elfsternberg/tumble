@@ -71,7 +71,14 @@ class Contexter
         return ""
 
     render: (name) ->
-        if @templates[name]? and _.isFunction(@templates[name]) then @templates[name](@) else ""
+        if @templates[name]? and _.isFunction(@templates[name])
+            @depth++
+            throw new Error('recursion-error') if @depth > 10
+            ret = @templates[name](@)
+            @depth--
+            ret
+        else
+            ""
 
 
 module.exports = (ast, data) ->

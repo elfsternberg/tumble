@@ -36,10 +36,13 @@ a string or a number.
 ### If
 
 An "if:<name>" section can contain other objects, but the entirety of
-the section is only rendered if the current context scope contains the
-current name, and the value associated with that name is "true" in a
-boolean context.  You might use to show someone's name, if the name
-field is populated, and show nothing if it isn't.
+the section is only rendered if the current context scope, and *only*
+the current context scope, contains the current name, and the value
+associated with that name is "true" in a boolean context.  You might
+use to show someone's name, if the name field is populated, and show
+nothing if it isn't.  This is useful for detecting if the current
+context has a field, but you don't want previous contexts' synonyms
+showing up.
 
 If your datasource returns:
 
@@ -48,6 +51,12 @@ If your datasource returns:
 Then your template would use:
 
     {if:name}Hello {name}!{/if:name}
+
+### When
+
+A "when:<name>" section is the same as the "if", but it will render if
+the current context scope, and any previous context scope on the
+stack, contains the current name.
 
 ### Block
 
