@@ -1,6 +1,6 @@
 {
     "name": "tumble",
-    "description": "Trivial reimplementation of Tumbler template parser",
+    "description": "Trivial reimplementation of Tumbler template parser/renderer",
     "version": "0.1.2",
     "author": {
         "name": "Kenneth \"Elf\" M. Sternberg",
@@ -9,7 +9,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/elfsternberg/tumble.git",
+        "url": "https://github.com/elfsternberg/tumble.git"
     },
     "licenses": [
         {
@@ -33,5 +33,5 @@
         "mocha": "1.8.x",
         "chai": "1.5.x"
     },
-    "keywords": []
+    "keywords": ["template", "tumblr"]
 }
