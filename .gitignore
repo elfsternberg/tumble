@@ -4,5 +4,6 @@
 *.orig
 npm-debug.log
 node_modules/*
-lib/
 tmp/
+src/*.js
+lib/*.js

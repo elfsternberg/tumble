@@ -1,7 +1,7 @@
 {
-    "name": "Tumble",
-    "description": "Trivial reimplementation of Tumbler template parser",
-    "version": "0.0.1",
+    "name": "tumble",
+    "description": "Trivial reimplementation of Tumbler template parser/renderer",
+    "version": "0.1.2",
     "author": {
         "name": "Kenneth \"Elf\" M. Sternberg",
         "email": "elf.sternberg@gmail.com",
@@ -9,11 +9,12 @@
     },
     "repository": {
         "type": "git",
-        "url": "ssh://elfstenberg@elfsternberg.com/home/elfsternberg/repos/tumble.git"
+        "url": "https://github.com/elfsternberg/tumble.git"
     },
     "licenses": [
         {
-            "type": "PRIVATE"
+            "type": "MIT",
+            "url": "https://raw.github.com/elfsternberg/tumble/master/LICENSE"
         }
     ],
     "main": "lib/tumble",
@@ -27,9 +28,10 @@
         "underscore": "1.4.x"
     },
     "devDependencies": {
+        "coffeescript": "1.6.x",
         "pegjs": "0.7.x",
         "mocha": "1.8.x",
         "chai": "1.5.x"
     },
-    "keywords": []
+    "keywords": ["template", "tumblr"]
 }

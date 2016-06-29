@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# /bin comes before /node_modules/.bin because sometimes I want to
+# override the behaviors provided.
+
+PROJECT_ROOT=`pwd`
+PATH="$PROJECT_ROOT/bin:$PROJECT_ROOT/node_modules/.bin:$PATH"
+export PATH

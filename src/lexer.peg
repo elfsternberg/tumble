@@ -1,4 +1,18 @@
 // -*- mode: javascript -*-
+{
+    var _VALID_BLOCK_TYPES = ['if', 'when', 'template', 'many', 'block'];
+    var _VBT_LENGTH = _VALID_BLOCK_TYPES.length;
+
+    function is_valid_block_type(b) {
+        for(var i = 0; i < _VBT_LENGTH; i++) {
+            if (_VALID_BLOCK_TYPES[i] == b) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
 
 document
     = ps:part* 
@@ -9,7 +23,13 @@ part
 
 tag_start "tag_start"
     =  ld b:tagname ":" n:tagname rd
+    &{ return is_valid_block_type(b); }
     { return {type: b, name: n }; }
+
+block
+    = t:tag_start ps:part* n:tag_end
+      &{ return (t.type == n.type) && (t.name == n.name) } 
+      { return {unit: 'block', type:t.type, name:t.name, content: ps } }
 
 tag_end
     =  ld '/' b:tagname ":" n:tagname rd 
@@ -41,7 +61,6 @@ text
 
 variable "variable"
     = ld t:tagname rd 
-      &{ return (t !== "render") }
       { return { unit: 'variable', name: t }; }
 
 block
