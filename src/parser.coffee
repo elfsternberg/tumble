@@ -79,6 +79,7 @@ class Contexter
         else
             ""
 
+# This is really the compiler at this point...
 
 module.exports = (ast, data) ->
     context = new Contexter(data)
